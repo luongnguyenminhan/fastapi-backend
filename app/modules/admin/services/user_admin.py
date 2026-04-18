@@ -14,6 +14,7 @@ from app.modules.admin.crud.user_admin import (
 )
 from app.modules.common.utils.logging import logger
 from app.modules.users.services.user import bulk_create_users, bulk_update_users, create_user
+from app.modules.users.utils.auth import get_password_hash
 
 
 def admin_get_users(db: Session, **kwargs) -> Tuple[List[User], int]:
@@ -38,6 +39,10 @@ def admin_update_user(db: Session, user_id: int, **updates) -> User:
     if not user:
         logger.warning(f"Admin service: update_user user not found user_id={user_id}")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=MessageDescriptions.USER_NOT_FOUND)
+
+    if "password" in updates and updates["password"] is not None:
+        updates["hashed_password"] = get_password_hash(updates.pop("password"))
+
     user = crud_admin_update_user(db, user_id, **updates)
     db.refresh(user)
     logger.info(f"Admin service: updated user_id={user_id}")
@@ -99,14 +104,27 @@ def admin_bulk_delete_users(db: Session, user_ids: List[int]) -> dict:
 
 def admin_create_user(db: Session, **user_data) -> User:
     logger.info(f"Admin service: create_user email={user_data.get('email')}")
+    if "password" in user_data and user_data["password"] is not None:
+        user_data["hashed_password"] = get_password_hash(user_data.pop("password"))
     return create_user(db, **user_data)
 
 
 def admin_bulk_create_users(db: Session, users_data: List[dict]) -> List[dict]:
     logger.info(f"Admin service: bulk_create_users count={len(users_data)}")
-    return bulk_create_users(db, users_data)
+    processed = []
+    for user_data in users_data:
+        if "password" in user_data and user_data["password"] is not None:
+            user_data["hashed_password"] = get_password_hash(user_data.pop("password"))
+        processed.append(user_data)
+    return bulk_create_users(db, processed)
 
 
 def admin_bulk_update_users(db: Session, updates: List[dict]) -> List[dict]:
     logger.info(f"Admin service: bulk_update_users count={len(updates)}")
-    return bulk_update_users(db, updates)
+    processed = []
+    for item in updates:
+        update_data = item["updates"]
+        if "password" in update_data and update_data["password"] is not None:
+            update_data["hashed_password"] = get_password_hash(update_data.pop("password"))
+        processed.append({"id": item["id"], "updates": update_data})
+    return bulk_update_users(db, processed)

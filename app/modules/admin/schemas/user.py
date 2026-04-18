@@ -24,11 +24,13 @@ class AdminUserUpdate(BaseModel):
     avatar_url: Optional[str] = None
     bio: Optional[str] = None
     position: Optional[str] = None
+    password: Optional[str] = None
     is_deleted: Optional[bool] = None
 
 
 class AdminUserCreate(BaseModel):
     email: str
+    password: Optional[str] = None
     name: Optional[str] = None
     avatar_url: Optional[str] = None
     bio: Optional[str] = None
