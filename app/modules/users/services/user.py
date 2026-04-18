@@ -220,7 +220,6 @@ def get_user_avatar(user_id: int) -> Optional[bytes]:
     return None
 
 
-
 def validate_avatar_file(file_bytes: bytes, content_type: Optional[str]) -> tuple:
     """Validate avatar file using magic bytes library (PNG/JPEG only, max 1MB).
 

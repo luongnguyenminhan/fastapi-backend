@@ -11,10 +11,7 @@ ALLOWED_USER_ORDER_FIELDS = {"id", "email", "name", "position", "created_at", "u
 
 def crud_get_users(db: Session, **kwargs) -> Tuple[List[User], int]:
     logger.info(f"CRUD: get_users called with filters: {kwargs}")
-    query = (
-        db.query(User)
-        .filter(User.is_deleted == False)
-    )
+    query = db.query(User).filter(User.is_deleted == False)
     if "name" in kwargs and kwargs["name"]:
         query = query.filter(User.name.ilike(f"%{kwargs['name']}%"))
     if "email" in kwargs and kwargs["email"]:

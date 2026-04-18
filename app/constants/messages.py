@@ -18,6 +18,7 @@ class MessageConstants:
 
 class MessageDescriptions:
     """Human-readable descriptions for each message constant."""
+
     AUTH_EMAIL_NOT_FOUND = "Unable to retrieve email from authentication provider"
     AUTH_FAILED = "Authentication failed"
     INTERNAL_SERVER_ERROR = "Internal server error"

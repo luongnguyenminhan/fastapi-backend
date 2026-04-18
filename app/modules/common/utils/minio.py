@@ -238,13 +238,19 @@ def convert_audio_to_opus(input_bytes: bytes, bitrate: str = "32k") -> Optional[
         # FFmpeg command: convert to opus with libopus codec
         cmd = [
             "ffmpeg",
-            "-i", temp_input,          # Input file
-            "-c:a", "libopus",         # Audio codec
-            "-b:a", bitrate,           # Bitrate
-            "-vbr", "on",              # Variable bitrate for better quality
-            "-compression_level", "10", # Max compression
-            "-f", "opus",              # Output format
-            "-y",                      # Overwrite output without asking
+            "-i",
+            temp_input,  # Input file
+            "-c:a",
+            "libopus",  # Audio codec
+            "-b:a",
+            bitrate,  # Bitrate
+            "-vbr",
+            "on",  # Variable bitrate for better quality
+            "-compression_level",
+            "10",  # Max compression
+            "-f",
+            "opus",  # Output format
+            "-y",  # Overwrite output without asking
             temp_output,
         ]
 
@@ -270,11 +276,7 @@ def convert_audio_to_opus(input_bytes: bytes, bitrate: str = "32k") -> Optional[
         compressed_size = len(opus_bytes)
         compression_ratio = (1 - compressed_size / original_size) * 100
 
-        logger.info(
-            f"[OPUS_ENCODE] Conversion successful: "
-            f"{original_size} bytes → {compressed_size} bytes "
-            f"({compression_ratio:.1f}% reduction)"
-        )
+        logger.info(f"[OPUS_ENCODE] Conversion successful: {original_size} bytes → {compressed_size} bytes ({compression_ratio:.1f}% reduction)")
 
         return opus_bytes
 

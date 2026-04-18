@@ -66,10 +66,7 @@ class CopilotChat(OpenAILike):
         if not token:
             logger.error("[COPILOT] GitHub token not provided in attributes or GITHUB_COPILOT_TOKEN env")
             raise ModelAuthenticationError(
-                message=(
-                    "GitHub token not provided. "
-                    "Set github_token on CopilotChat or GITHUB_COPILOT_TOKEN environment variable."
-                ),
+                message=("GitHub token not provided. Set github_token on CopilotChat or GITHUB_COPILOT_TOKEN environment variable."),
                 model_name=self.name,
             )
 

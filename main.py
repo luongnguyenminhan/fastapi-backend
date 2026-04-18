@@ -56,7 +56,6 @@ def custom_openapi():
         "url": "https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png",
     }
 
-
     openapi_schema["components"]["securitySchemes"] = {
         "BearerAuth": {
             "type": "http",
@@ -83,8 +82,6 @@ app = FastAPI(
     redirect_slashes=False,
     generate_unique_id_function=custom_generate_unique_id,
 )
-
-
 
 
 # Add middleware to log all requests
@@ -484,6 +481,7 @@ def download_file(object_name: str):
 
     return StreamingResponse(iter([file_bytes]), media_type="application/octet-stream", headers={"Content-Disposition": f"attachment; filename={filename_only}"})
 
+
 @app.get("/", response_class=HTMLResponse)
 def read_root():
     return """
@@ -792,6 +790,7 @@ def read_root():
     </body>
     </html>
     """
+
 
 if __name__ == "__main__":
     import uvicorn

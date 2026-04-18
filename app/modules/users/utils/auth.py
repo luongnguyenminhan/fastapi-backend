@@ -26,6 +26,7 @@ def create_refresh_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode.update({"exp": expire, "type": "refresh"})
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm="HS256")
 
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 

@@ -103,4 +103,3 @@ class GmailClient:
         except Exception as e:
             logger.error(f"Failed to send email: {e}")
             raise
-

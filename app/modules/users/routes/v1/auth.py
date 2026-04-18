@@ -145,4 +145,3 @@ def update_current_user_info(
             "updated_at": updated_user.updated_at,
         },
     )
-
