@@ -30,12 +30,41 @@ def create_refresh_token(data: dict, expires_delta: Optional[timedelta] = None):
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
+def validate_password(password: str) -> str:
+    """
+    Validate a password against security requirements.
+
+    Raises HTTPException with status code 400 if the password is invalid.
+    """
+    if not password:
+        raise HTTPException(status_code=400, detail="Password cannot be empty")
+
+    if len(password) < 8:
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters long")
+    if not any(char.isdigit() for char in password):
+        raise HTTPException(status_code=400, detail="Password must contain at least one number")
+    if not any(char.isupper() for char in password):
+        raise HTTPException(status_code=400, detail="Password must contain at least one uppercase letter")
+    if not any(char.islower() for char in password):
+        raise HTTPException(status_code=400, detail="Password must contain at least one lowercase letter")
+    if not any(char in '!@#$%^&*()-_+=[]{}|;:,.<>?/' for char in password):
+        raise HTTPException(status_code=400, detail="Password must contain at least one special character")
+
+    return password
+
+
 def get_password_hash(password: str) -> str:
+    validate_password(password)
     return pwd_context.hash(password)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+    if not plain_password or not hashed_password:
+        return False
+    try:
+        return pwd_context.verify(plain_password, hashed_password)
+    except Exception:
+        return False
 
 
 def verify_token(token: str):

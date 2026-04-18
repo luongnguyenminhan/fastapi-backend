@@ -2,6 +2,8 @@ from typing import Optional
 
 from pydantic import BaseModel, EmailStr, field_validator
 
+from app.modules.users.utils.auth import validate_password
+
 
 class TokenResponse(BaseModel):
     access_token: str
@@ -37,9 +39,7 @@ class RegisterRequest(BaseModel):
     @field_validator("password")
     @classmethod
     def validate_password(cls, value: str) -> str:
-        if not value or len(value) < 8:
-            raise ValueError("Password must be at least 8 characters")
-        return value
+        return validate_password(value)
 
 
 class AuthResponse(BaseModel):
