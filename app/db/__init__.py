@@ -91,21 +91,8 @@ def create_tables() -> None:
     from sqlmodel import SQLModel
 
     from app.models import (
-        ChatMessage,  # noqa: F401
-        Conversation,  # noqa: F401
-        File,  # noqa: F401
-        Meeting,  # noqa: F401
-        MeetingItem,  # noqa: F401
-        MeetingItemProject,  # noqa: F401
-        MeetingNote,  # noqa: F401
-        MeetingTag,  # noqa: F401
-        Notification,  # noqa: F401
-        Project,  # noqa: F401
-        ProjectMeeting,  # noqa: F401
-        Tag,  # noqa: F401
-        Transcript,  # noqa: F401
-        User,  # noqa: F401
-        UserProject,  # noqa: F401
+        User,
+        Version,
     )
 
     try:

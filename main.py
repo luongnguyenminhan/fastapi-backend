@@ -154,6 +154,16 @@ app.add_exception_handler(Exception, general_exception_handler)
 
 app.include_router(route)
 
+@app.on_event("startup")
+async def startup_event():
+    """Application startup event"""
+
+    # Initialize database and create tables if needed
+    from app.db import init_database
+
+    init_database()
+
+
 
 @app.get("/health")
 def health(db: Session = Depends(get_db)) -> Dict[str, Any]:
