@@ -28,6 +28,9 @@ from starlette.responses import JSONResponse, StreamingResponse
 from app.modules.common.utils.response import (
     get_request_id,
     get_trace_id,
+    is_api_response_like,
+    is_standardized_response,
+    normalize_response_payload,
 )
 
 
@@ -100,11 +103,20 @@ class ResponseWrappingMiddleware(BaseHTTPMiddleware):
         headers = {k: v for k, v in response.headers.items() if k.lower() != "content-length"}
 
         # Check if already in standardized format
-        if self._is_standardized_format(data):
+        if is_standardized_response(data):
             # Already standardized, return as-is
             return JSONResponse(
                 status_code=status_code,
                 content=data,
+                headers=headers,
+            )
+
+        # Check if response is API-like and already contains success/data
+        if is_api_response_like(data):
+            normalized_response = normalize_response_payload(data, status_code, request_id, trace_id)
+            return JSONResponse(
+                status_code=status_code,
+                content=normalized_response,
                 headers=headers,
             )
 
@@ -121,6 +133,7 @@ class ResponseWrappingMiddleware(BaseHTTPMiddleware):
         wrapped_response = {
             "status": status_code,
             "success": True,
+            "message": None,
             "data": data,
             "error": None,
             "meta": self._create_meta_dict(request_id, trace_id),

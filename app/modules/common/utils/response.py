@@ -62,9 +62,48 @@ def create_meta(request_id: Optional[str] = None, trace_id: Optional[str] = None
     )
 
 
+def is_standardized_response(data: Any) -> bool:
+    """Check if a payload already contains the full API response shape."""
+    if not isinstance(data, dict):
+        return False
+
+    required_keys = {"status", "success", "data", "error", "meta"}
+    return required_keys.issubset(data.keys())
+
+
+def is_api_response_like(data: Any) -> bool:
+    """Check if a payload already has an API-like response shape."""
+    if not isinstance(data, dict):
+        return False
+
+    return "success" in data and "data" in data
+
+
+def normalize_response_payload(
+    payload: dict,
+    status_code: int,
+    request_id: Optional[str] = None,
+    trace_id: Optional[str] = None,
+) -> dict:
+    """Normalize API-like payloads into the full standardized response shape."""
+    meta = payload.get("meta")
+    if meta is None:
+        meta = create_meta(request_id, trace_id).model_dump()
+
+    return {
+        "status": payload.get("status", status_code),
+        "success": payload.get("success", False),
+        "message": payload.get("message"),
+        "data": payload.get("data"),
+        "error": payload.get("error", None),
+        "meta": meta,
+    }
+
+
 def success_response(
     data: Optional[T] = None,
     status_code: int = 200,
+    message: Optional[str] = None,
     request_id: Optional[str] = None,
     trace_id: Optional[str] = None,
 ) -> ApiResponse[T]:
@@ -74,11 +113,12 @@ def success_response(
     Args:
         data: Response data payload
         status_code: HTTP status code (default 200)
+        message: Optional human-readable message
         request_id: Optional custom request ID
         trace_id: Optional custom trace ID
 
     Returns:
-        ApiResponse with success=true, status, data, error=null, meta
+        ApiResponse with success=true, status, message, data, error=null, meta
 
     Example:
         return success_response({"user_id": 123, "name": "John"})
@@ -86,6 +126,7 @@ def success_response(
     return ApiResponse(
         status=status_code,
         success=True,
+        message=message,
         data=data,
         error=None,
         meta=create_meta(request_id, trace_id),
@@ -182,6 +223,7 @@ def paginated_response(
     limit: int,
     total: int,
     status_code: int = 200,
+    message: Optional[str] = None,
     request_id: Optional[str] = None,
     trace_id: Optional[str] = None,
 ) -> PaginatedResponse[T]:
@@ -194,11 +236,12 @@ def paginated_response(
         limit: Items per page
         total: Total number of items
         status_code: HTTP status code (default 200)
+        message: Optional human-readable message
         request_id: Optional custom request ID
         trace_id: Optional custom trace ID
 
     Returns:
-        PaginatedResponse with success=true, data, pagination meta, response meta
+        PaginatedResponse with success=true, message, data, pagination meta, response meta
 
     Example:
         items = [user1, user2, user3]

@@ -12,7 +12,3 @@ class AdminTokenResponse(BaseModel):
     expires_in: int
 
 
-class AdminAuthResponse(BaseModel):
-    success: bool
-    message: str
-    data: AdminTokenResponse
