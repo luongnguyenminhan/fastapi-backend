@@ -1,6 +1,5 @@
 from typing import List, Optional, Tuple
 
-import magic
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -246,25 +245,4 @@ def validate_avatar_file(file_bytes: bytes, content_type: Optional[str]) -> tupl
     if not content_type or not content_type.startswith("image/"):
         logger.warning(f"Invalid Content-Type for avatar: {content_type}")
         return False, f"Invalid Content-Type: {content_type}. Only image files allowed."
-
-    # Detect actual MIME type using magic bytes
-    detected_mime = magic.from_buffer(file_bytes, mime=True)
-    logger.debug(f"Detected MIME type: {detected_mime}")
-
-    # Allow only PNG and JPEG
-    allowed_mimes = ["image/png", "image/jpeg"]
-    if detected_mime not in allowed_mimes:
-        logger.warning(f"Unsupported image format: {detected_mime}")
-        return False, f"File format not supported. Only PNG and JPEG are allowed. Detected: {detected_mime}"
-
-    # Validate Content-Type matches detected MIME type
-    if detected_mime == "image/png" and "png" not in content_type.lower():
-        logger.warning(f"Content-Type mismatch: header={content_type}, detected={detected_mime}")
-        return False, f"Content-Type mismatch. Header indicates {content_type}, but file is PNG"
-
-    if detected_mime == "image/jpeg" and "jpeg" not in content_type.lower() and "jpg" not in content_type.lower():
-        logger.warning(f"Content-Type mismatch: header={content_type}, detected={detected_mime}")
-        return False, f"Content-Type mismatch. Header indicates {content_type}, but file is JPEG"
-
-    logger.debug(f"Avatar file validation passed: mime={detected_mime}, size={len(file_bytes)} bytes")
     return True, None
