@@ -3,8 +3,8 @@ from datetime import timedelta
 from fastapi import HTTPException, status
 
 from app.core.config import settings
+from app.modules.common.utils.auth import create_access_token
 from app.modules.common.utils.logging import logger
-from app.modules.users.utils.auth import create_access_token
 
 
 def admin_login(username: str, password: str) -> dict:

@@ -9,8 +9,6 @@ from pytz import timezone
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
-from app.db import get_db
-from app.models.user import User
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -117,33 +115,3 @@ class JWTBearer(HTTPBearer):
 
 
 jwt_bearer = JWTBearer()
-
-
-def get_current_user(token: str = Depends(jwt_bearer), db: Session = Depends(get_db)):
-    """
-    Extract user information from JWT token.
-    """
-    try:
-        # Strip Bearer prefix if present (for direct calls to this function)
-        import re
-
-        token = re.sub(r"^[Bb]earer\s+", "", token).strip()
-
-        user_id = get_current_user_from_token(token)
-        if not user_id:
-            raise HTTPException(status_code=401, detail="Invalid token")
-
-        user = db.query(User).filter(User.id == int(user_id)).first()
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-
-        return user
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=401, detail="Token verification failed") from e
-
-
-def is_admin_user(user_id: int) -> bool:
-    """Check if user is a system admin"""
-    return user_id in settings.ADMIN_USER_IDS
