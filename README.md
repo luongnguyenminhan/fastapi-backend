@@ -1,204 +1,112 @@
-# SecureScribeBE
+# Backend API
 
-A FastAPI project with structured layout.
+FastAPI base repo. Starter template for building backend services.
+
+---
+
+## Features
+
+- Auth: email/password, JWT, refresh tokens
+- Admin: admin auth, user CRUD, bulk ops
+- Users: profile, avatar, password management
+- Common: response wrapping, request tracking, error standardization, timeouts, logging
+- Versioning module
+
+---
+
+## Tech Stack
+
+| Component       | Tech                    |
+|-----------------|-------------------------|
+| Framework       | FastAPI + Uvicorn       |
+| ORM             | SQLAlchemy / SQLModel   |
+| DB              | MySQL                   |
+| Cache           | Redis                   |
+| Object storage  | MinIO                   |
+| Vector store    | Qdrant                  |
+| Workers         | Celery                  |
+| Auth            | JWT, argon2/bcrypt      |
+
+---
 
 ## Project Structure
 
 ```
 ├── app
-│   ├── __init__.py
-│   ├── constants
-│   │   ├── __init__.py
-│   │   └── messages.py
-│   ├── core
-│   │   ├── __init__.py
-│   │   ├── azure_oauth_utils.py
-│   │   ├── config.py
-│   │   └── vault_loader.py
-│   ├── db
-│   │   └── __init__.py
-│   ├── events
-│   │   ├── __init__.py
-│   │   ├── base.py
-│   │   ├── domain_events.py
-│   │   ├── listeners
-│   │   │   ├── __init__.py
-│   │   │   ├── notification_listener.py
-│   │   │   └── websocket_listener.py
-│   │   └── project_events.py
-│   ├── exception_handlers
-│   │   ├── __init__.py
-│   │   └── http_exception.py
-│   ├── jobs
-│   │   ├── __init__.py
-│   │   ├── celery_worker.py
-│   │   ├── tasks
-│   │   │   ├── __init__.py
-│   │   │   ├── audio_tasks.py
-│   │   │   ├── chat_tasks.py
-│   │   │   ├── common.py
-│   │   │   ├── file_tasks.py
-│   │   │   ├── meeting_tasks.py
-│   │   │   ├── notification_tasks.py
-│   │   │   └── webhook_tasks.py
-│   │   └── tasks.py
-│   ├── models
-│   │   ├── __init__.py
-│   │   ├── base.py
-│   │   ├── chat.py
-│   │   ├── file.py
-│   │   ├── meeting.py
-│   │   ├── notification.py
-│   │   ├── project.py
-│   │   ├── tag.py
-│   │   ├── task.py
-│   │   └── user.py
-│   └── modules
-│       ├── __init__.py
-│       ├── admin
-│       │   ├── __init__.py
-│       │   ├── crud
-│       │   ├── routes
-│       │   ├── schemas
-│       │   ├── services
-│       │   └── utils
-│       ├── chat
-│       │   ├── __init__.py
-│       │   ├── crud
-│       │   ├── routes
-│       │   ├── schemas
-│       │   ├── services
-│       │   ├── tools
-│       │   └── utils
-│       ├── common
-│       │   ├── __init__.py
-│       │   ├── crud
-│       │   ├── routes
-│       │   ├── schemas
-│       │   ├── services
-│       │   └── utils
-│       ├── file
-│       │   ├── __init__.py
-│       │   ├── crud
-│       │   ├── routes
-│       │   ├── schemas
-│       │   └── services
-│       ├── meeting_item
-│       │   ├── __init__.py
-│       │   ├── crud
-│       │   ├── routes
-│       │   ├── schemas
-│       │   └── services
-│       ├── meetings
-│       │   ├── __init__.py
-│       │   ├── crud
-│       │   ├── routes
-│       │   ├── schemas
-│       │   ├── services
-│       │   └── utils
-│       ├── notification
-│       │   ├── __init__.py
-│       │   ├── crud
-│       │   ├── routes
-│       │   ├── schemas
-│       │   └── services
-│       ├── project
-│       │   ├── __init__.py
-│       │   ├── crud
-│       │   ├── routes
-│       │   ├── schemas
-│       │   ├── services
-│       │   └── utils
-│       ├── transcripts
-│       │   ├── __init__.py
-│       │   ├── crud
-│       │   ├── routes
-│       │   ├── schemas
-│       │   ├── services
-│       │   └── utils
-│       └── users
-│           ├── __init__.py
-│           ├── crud
-│           ├── routes
-│           ├── schemas
-│           ├── services
-│           └── utils
-└── README.md
+│   ├── constants/          # Messages, shared constants
+│   ├── core/               # Config, OAuth utils, vault loader
+│   ├── db/                 # Engine and session
+│   ├── exception_handlers/ # HTTP + error middleware
+│   ├── jobs/               # Celery worker and tasks
+│   ├── models/             # SQLAlchemy models
+│   ├── modules/            # Feature modules
+│   │   ├── admin/
+│   │   ├── common/
+│   │   ├── users/
+│   │   └── version/
+│   └── scripts/
+├── docs/openapi/           # OpenAPI 3.0.3 specs
+├── templates/              # Coding/API standards
+├── main.py
+├── docker-compose.local.yml
+├── Dockerfile
+└── requirements.txt
+```
 
-## Architecture
+Module layout: `crud/`, `routes/`, `schemas/`, `services/`, `utils/`.
 
-- `app/constants`: Shared constant values and message templates.
-- `app/core`: Configuration and authentication helpers.
-- `app/db`: Database engine/session setup.
-- `app/events`: Domain events and listeners.
-- `app/exception_handlers`: HTTP exception handlers.
-- `app/jobs`: Celery worker and task definitions.
-- `app/models`: SQLAlchemy data models.
-- `app/modules`: Feature modules (admin/chat/common/file/meeting_item/meetings/notification/project/transcripts/users).
-- `app/schemas`: Pydantic request/response schemas.
-- `app/services`: Business logic and external integrations.
-- `app/utils`: Utility helpers.
+---
 
 ## Getting Started
 
-### Local Development (Docker Compose)
-
-Use `docker-compose.local.yml` to start both API and worker services in one command:
+Requirements: Docker, Docker Compose.
 
 ```bash
-# Build and start all local dependencies + api + worker
+cp .env.example .env
 docker-compose -f docker-compose.local.yml up --build
 ```
 
-This will run:
-- `api` service (FastAPI/Uvicorn)
-- `redis`
-- `minio`
-- `qdrant`
-- `db`
-- any other local dependencies configured in `docker-compose.local.yml`
+Brings up: `api`, `redis`, `minio`, `qdrant`, `db`.
 
-Do not run `start.sh` for local development in this setup; the container-compose workflow is the supported approach.
-
-### Docker Development
-
-```bash
-# Start the API server
-docker-compose up api
-
-# Or start with database
-docker-compose up api db
-```
+---
 
 ## API Documentation
 
-Complete OpenAPI 3.0.3 specifications for all Meeting Agent API modules are available in the `docs/openapi/` directory:
+| Module | Spec                                          |
+|--------|-----------------------------------------------|
+| Users  | [user-api.yaml](docs/openapi/user-api.yaml)   |
+| Admin  | [admin-api.yaml](docs/openapi/admin-api.yaml) |
 
-### Core API Endpoints
+Error codes: [docs/openapi/error_codes.md](docs/openapi/error_codes.md).
 
-| Module | Documentation | Description |
-|--------|---------------|-------------|
-| **Users** | [user-api.yaml](docs/openapi/user-api.yaml) | Authentication, user profiles, avatars, WebSocket status |
-| **Meetings** | [meeting-api.yaml](docs/openapi/meeting-api.yaml) | Meeting CRUD, AI notes, agendas, bot integration, PDF export |
-| **Transcripts & Audio** | [transcript-api.yaml](docs/openapi/transcript-api.yaml) | Audio processing, ASR transcription, semantic search, chunking |
-| **Meeting Items & Tasks** | [meeting-item-api.yaml](docs/openapi/meeting-item-api.yaml) | Task management, assignment, status tracking, bulk operations |
-| **Files** | [file-api.yaml](docs/openapi/file-api.yaml) | Document and audio file management, indexing, transcription |
-| **Projects** | [project-api.yaml](docs/openapi/project-api.yaml) | Project management, RBAC, member management, role requests |
-| **Chat & Conversations** | [chat-api.yaml](docs/openapi/chat-api.yaml) | Real-time messaging, AI assistance, entity mentions, SSE streaming |
-| **Notifications** | [notification-api.yaml](docs/openapi/notification-api.yaml) | Notification delivery, WebSocket streaming, task updates |
+---
 
-### OpenAPI Standards
+## Standards
 
-All API specifications follow the **OpenAPI 3.0.3** standard and can be:
-- Imported into tools like Postman, Insomnia, or Swagger UI
-- Used for API contract testing
-- Integrated into documentation portals
-- Referenced for client code generation
+See `templates/`:
 
-### Error Handling Reference
+| #  | File                                                                            |
+|----|---------------------------------------------------------------------------------|
+| 01 | [Coding_Convention](templates/01_Coding_Convention.md)                          |
+| 02 | [API_Naming_Convention](templates/02_API_Naming_Convention.md)                  |
+| 03 | [API_Response_Guideline](templates/03_API_Response_Guideline.md)                |
+| 04 | [Error_Code_Guideline](templates/04_Error_Code_Guideline.md)                    |
+| 05 | [API_Timeout_Configuration](templates/05_API_Timeout_Configuration.md)          |
+| 06 | [Readme template](templates/06_Readme.md)                                       |
+| 07 | [TL_QA_review_checklist](templates/07_TL_QA_review_checklist.md)                |
 
-See [docs/error_codes.md](docs/error_codes.md) for comprehensive error handling documentation including:
-- HTTP status codes and their meanings
-- Error categorization and scenarios
-- Frontend implementation examples
-- Troubleshooting guides
+---
+
+## Testing
+
+```bash
+pytest
+```
+
+Config: `pytest.ini`.
+
+---
+
+## Commit Convention
+
+Format: `<type>(scope): subject` per [.github/commit_guide.instructions.md](.github/commit_guide.instructions.md).

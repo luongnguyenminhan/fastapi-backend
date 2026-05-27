@@ -1,5 +1,5 @@
 """
-Timeout Utilities for Meeting Agent API
+Timeout Utilities for Backend API
 
 Provides timeout decorators, exception handling, and timeout utilities.
 """

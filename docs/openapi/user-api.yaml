@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: Meeting Agent API - User Management
+  title: Backend API - User Management
   description: |
-    User management and authentication endpoints for Meeting Agent API.
+    User management and authentication endpoints for Backend API.
 
     Supports:
     - Email/password authentication flow
@@ -11,8 +11,8 @@ info:
     - Token refresh mechanism
   version: 1.0.0
   contact:
-    name: Meeting Agent Team
-    email: Annd11@fpt.com
+    name: Backend API Team
+    email: support@example.com
 
 servers:
   - url: http://localhost:8000/api/v1

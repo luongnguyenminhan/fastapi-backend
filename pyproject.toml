@@ -1,7 +1,7 @@
 [project]
 name = "fastapi-backend"
 version = "0.1.0"
-description = "Add your description here"
+description = "FastAPI backend for meeting management, transcription, chat, and notifications."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

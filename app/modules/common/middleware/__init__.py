@@ -1,5 +1,5 @@
 """
-Common middleware for Meeting Agent API
+Common middleware for Backend API
 """
 
 from app.modules.common.middleware.response_wrapping import ResponseWrappingMiddleware

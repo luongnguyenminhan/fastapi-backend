@@ -2,7 +2,7 @@
 applyTo: '**'
 ---
 
-# Commit Guideline for SecureScribeAdmin
+# Commit Guideline for Backend API
 
 Purpose:
 Provide a concise, consistent commit message and branch workflow guideline for contributors and automated agents (including AI) to produce clear history and safe changes.

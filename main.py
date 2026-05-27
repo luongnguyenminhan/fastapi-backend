@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from typing import Any, Dict
 
 from fastapi import Depends, FastAPI, HTTPException
@@ -69,18 +70,21 @@ def custom_openapi():
     return app.openapi_schema
 
 
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    from app.db import init_database
+
+    init_database()
+    yield
+
+
 app = FastAPI(
-    title="take-note-api",
+    title=settings.PROJECT_NAME,
     version="1.0.0",
-    contact={
-        "name": "An Luong",
-        "email": "luongnguyenminhan02052004@gmail.com",
-    },
-    license_info={
-        "name": "MIT",
-    },
+    license_info={"name": "MIT"},
     redirect_slashes=False,
     generate_unique_id_function=custom_generate_unique_id,
+    lifespan=lifespan,
 )
 
 
@@ -89,23 +93,9 @@ app = FastAPI(
 async def log_requests(request, call_next):
     logger.info(f"→ {request.method} {request.url}")
     response = await call_next(request)
-    logger.success(f"← {response.__class__.__name__}({response.status_code if hasattr(response, 'status_code') else 'streaming'}, {getattr(response, 'media_type', 'unknown')})")
-
-    try:
-        if hasattr(response, "body"):
-            body_content = response.body.decode("utf-8", errors="ignore")
-            # Limit body size to avoid flooding logs
-            if len(body_content) > 500:
-                body_content = body_content[:500] + "..."
-            logger.debug(f"Response body: {body_content}")
-        elif hasattr(response, "content") and response.content:
-            body_content = response.content.decode("utf-8", errors="ignore")
-            if len(body_content) > 500:
-                body_content = body_content[:500] + "..."
-            logger.debug(f"Response body: {body_content}")
-    except Exception as e:
-        logger.error(f"Could not read response body: {e}")
-
+    status = response.status_code if hasattr(response, "status_code") else "streaming"
+    media = getattr(response, "media_type", "unknown")
+    logger.success(f"← {response.__class__.__name__}({status}, {media})")
     return response
 
 
@@ -130,17 +120,12 @@ app.add_middleware(RequestTrackingMiddleware)
 # Add ResponseWrappingMiddleware to automatically wrap all successful 2xx responses
 app.add_middleware(ResponseWrappingMiddleware)
 
+_cors_origins = [str(o).rstrip("/") for o in settings.BACKEND_CORS_ORIGINS] if getattr(settings, "BACKEND_CORS_ORIGINS", None) else []
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=(["*"]),
+    allow_origins=_cors_origins,
     allow_credentials=True,
-    allow_methods=[
-        "GET",
-        "POST",
-        "PUT",
-        "DELETE",
-        "OPTIONS",
-    ],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
     expose_headers=["*"],
 )
@@ -153,16 +138,6 @@ app.add_exception_handler(HTTPException, custom_http_exception_handler)
 app.add_exception_handler(Exception, general_exception_handler)
 
 app.include_router(route)
-
-@app.on_event("startup")
-async def startup_event():
-    """Application startup event"""
-
-    # Initialize database and create tables if needed
-    from app.db import init_database
-
-    init_database()
-
 
 
 @app.get("/health")

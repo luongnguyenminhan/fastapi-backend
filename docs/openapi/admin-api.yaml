@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: Meeting Agent API - Admin Management
+  title: Backend API - Admin Management
   description: |
-    Admin authentication and user management endpoints for Meeting Agent API.
+    Admin authentication and user management endpoints for Backend API.
 
     Supports:
     - Admin login with JWT authentication
@@ -11,8 +11,8 @@ info:
     - User restore after soft delete
   version: 1.0.0
   contact:
-    name: Meeting Agent Team
-    email: Annd11@fpt.com
+    name: Backend API Team
+    email: support@example.com
 
 servers:
   - url: http://localhost:8000/api/v1

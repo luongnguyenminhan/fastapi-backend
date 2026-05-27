@@ -70,7 +70,7 @@ class GmailClient:
         """Send email via Gmail API"""
         try:
             msg = MIMEMultipart()
-            msg["From"] = "Meeting Agent"
+            msg["From"] = "Backend API"
             msg["To"] = to
             msg["Subject"] = subject
 

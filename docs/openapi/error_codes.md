@@ -1,4 +1,4 @@
-# Meeting Agent API - Standardized Error Codes
+# Backend API - Standardized Error Codes
 
 ## Error Code Format
 
@@ -589,4 +589,4 @@ For questions or issues with error handling:
 
 **Last Updated**: March 31, 2026  
 **Version**: 1.0.0  
-**Maintained By**: Meeting Agent API Team
+**Maintained By**: Backend API Team

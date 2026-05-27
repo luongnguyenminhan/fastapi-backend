@@ -1,5 +1,5 @@
 """
-Timeout Configuration for Meeting Agent API
+Timeout Configuration for Backend API
 
 Defines timeout values for different types of external calls:
 - GET requests: 100ms-1s

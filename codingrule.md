@@ -2,7 +2,7 @@
 
 ## Project Context
 
-**SecureScribe Backend** - FastAPI-based meeting management and transcription platform
+**Backend API** - FastAPI-based meeting management and transcription platform
 
 - **Tech Stack**: FastAPI, SQLModel, MySQL, Pydantic
 - **Architecture**: Service layer pattern with clean separation

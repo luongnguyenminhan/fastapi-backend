@@ -1,5 +1,5 @@
 """
-Timeout Middleware for Meeting Agent API
+Timeout Middleware for Backend API
 
 Handles timeout exceptions and converts them to standardized error responses.
 """

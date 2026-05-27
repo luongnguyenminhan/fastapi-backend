@@ -185,7 +185,7 @@ def get_notification_template(context: Dict[str, Any]) -> str:
                 <p>{context.get("message", "Bạn có một thông báo mới")}</p>
                 {action_button_html}
             </div>
-            <div class="footer">&copy; Meeting Agent - Đây là một tin nhắn tự động, vui lòng không trả lời.</div>
+            <div class="footer">&copy; Backend API - Đây là một tin nhắn tự động, vui lòng không trả lời.</div>
         </div>
     </body>
     </html>
@@ -286,7 +286,7 @@ def get_meeting_creation_template(context: Dict[str, Any]) -> str:
                 </div>
                 {action_button_html}
             </div>
-            <div class="footer">&copy; Meeting Agent - Đây là một tin nhắn tự động, vui lòng không trả lời.</div>
+            <div class="footer">&copy; Backend API - Đây là một tin nhắn tự động, vui lòng không trả lời.</div>
         </div>
     </body>
     </html>
@@ -358,7 +358,7 @@ def get_meeting_note_template(context: Dict[str, Any]) -> str:
                 </div>
                 {action_button_html}
             </div>
-            <div class="footer">&copy; Meeting Agent - Đây là một tin nhắn tự động, vui lòng không trả lời.</div>
+            <div class="footer">&copy; Backend API - Đây là một tin nhắn tự động, vui lòng không trả lời.</div>
         </div>
     </body>
     </html>
